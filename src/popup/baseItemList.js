@@ -300,8 +300,8 @@ export default class BaseItemList extends HTMLElement {
     let n_pos = Math.abs(n);
 
     if (!selectedItem) {
-      if (((n < 0) && (itemList.lastElementChild.classList.contains("item")))
-        || ((n > 0) && (itemList.firstElementChild.classList.contains("item")))) {
+      if (((n < 0) && (itemList.lastElementChild?.classList.contains("item")))
+        || ((n > 0) && (itemList.firstElementChild?.classList.contains("item")))) {
         n_pos--;
       }
     }
@@ -311,6 +311,13 @@ export default class BaseItemList extends HTMLElement {
   
     while (listItem && n_pos > 0) {
       listItem = listItem[direction];
+
+      if (!listItem) {
+        listItem = (direction === "nextElementSibling") 
+          ? itemList.firstElementChild 
+          : itemList.lastElementChild;
+      }
+
       if (listItem && listItem.classList.contains("item")) {
         n_pos--;
       }
@@ -547,6 +554,11 @@ export default class BaseItemList extends HTMLElement {
 
           if (match && canIncludeItem) {
             let node = this._addItem(item, BaseItemList.MODE_SEARCH);
+            // console.log(">>>>>>>> node.classList: ", node.classList);
+            // if (!selectNode) {
+            //   console.log(">>>>>>>> node.classList: ", node.classList);
+            //   selectNode = node;
+            // }
             if (selectedFolderId && item.id == selectedFolderId) {
               selectNode = node;
             }
@@ -572,6 +584,7 @@ export default class BaseItemList extends HTMLElement {
 
           if (!mismatch && canIncludeItem) {
             let node = this._addItem(item, BaseItemList.MODE_SEARCH);
+            // console.log(">>>>>>>> MODE_SEARCH node.classList: ", node.classList);
             if (selectedFolderId && item.id == selectedFolderId) {
               selectNode = node;
             }
@@ -582,6 +595,10 @@ export default class BaseItemList extends HTMLElement {
       for (let item of this.defaultItems) {
         if (this.#navigateOnly || item.canFileMessages) {
           let node = this._addItem(item, BaseItemList.MODE_DEFAULT);
+          // if (!selectNode) {
+          //   console.log(">>>>>>>> MODE_DEFAULT node.classList: ", node.classList);
+          //   selectNode = node;
+          // }
           if (selectedFolderId && item.id == selectedFolderId) {
             selectNode = node;
           }
@@ -591,6 +608,10 @@ export default class BaseItemList extends HTMLElement {
       for (let item of this.allItems) {
         if (this.#navigateOnly || item.canFileMessages) {
           let node = this._addItem(item, BaseItemList.MODE_ALL);
+          // if (!selectNode) {
+          //   console.log(">>>>>>>> MODE_ALL node.classList: ", node.classList);
+          //   selectNode = node;
+          // }
           if (selectedFolderId && item.id == selectedFolderId) {
             selectNode = node;
           }
@@ -600,6 +621,10 @@ export default class BaseItemList extends HTMLElement {
 
     if (selectNode) {
       this.selected = selectNode;
+      // console.log(">>>>>>>> selectNode.textContent: ", selectNode.textContent);
+      // console.log(">>>>>>>> selectNode.classList: ", selectNode.classList);
+      // //selectNode.classList.add("selected");
+      // this.dispatchEvent(new CustomEvent("selected", { detail: { itemNode: selectNode.itemNode } }));
     }
   }
 }
