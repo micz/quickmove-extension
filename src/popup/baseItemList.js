@@ -242,6 +242,18 @@ export default class BaseItemList extends HTMLElement {
     let searchInput = this.search;
     let listBody = this.shadowRoot.querySelector(".list-body");
 
+    const observer = new MutationObserver(() => {
+      if(!this.selected) {
+        this.selected = this.nthItem(1);
+      }
+      observer.disconnect();
+    });
+    
+    observer.observe(listBody, {
+      childList: true,
+      subtree: true
+    });
+
     searchInput.placeholder = this.getAttribute("placeholder") || "";
 
     searchInput.addEventListener("input", this.searchInputCallbackRaw);
