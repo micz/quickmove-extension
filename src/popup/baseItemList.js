@@ -18,6 +18,7 @@ export default class BaseItemList extends HTMLElement {
 
   ignoreFocus = false;
   partialMatchFullPath = false;
+  searchAccountName = true;
 
   static observedAttributes = ["placeholder"];
 
@@ -294,22 +295,30 @@ export default class BaseItemList extends HTMLElement {
 
   nthItem(n) {
     let itemList = this.shadowRoot.querySelector(".list-body");
-    let listItem = itemList.firstElementChild;
-    let direction = "nextElementSibling";
+    let selectedItem = itemList.querySelector(".selected");
 
-    if (n < 0) {
-      listItem = itemList.lastElementChild;
-      direction = "previousElementSibling";
-      n = -n - 1;
-    }
+    let n_pos = Math.abs(n);
 
-    for (; n > 0; n--) {
-      while (listItem && !listItem.classList.contains("item")) {
-        listItem = listItem[direction];
+    if (!selectedItem) {
+      if (((n < 0) && (itemList.lastElementChild.classList.contains("item")))
+        || ((n > 0) && (itemList.firstElementChild.classList.contains("item")))) {
+        n_pos--;
       }
     }
+
+    let listItem = selectedItem || (n < 0 ? itemList.lastElementChild : itemList.firstElementChild);
+    let direction = n < 0 ? "previousElementSibling" : "nextElementSibling";
+  
+    while (listItem && n_pos > 0) {
+      listItem = listItem[direction];
+      if (listItem && listItem.classList.contains("item")) {
+        n_pos--;
+      }
+    }
+  
     return listItem;
   }
+  
 
   itemListSelectLeave(event) {
     this.selected = null;
@@ -403,11 +412,11 @@ export default class BaseItemList extends HTMLElement {
 
     if (event.key == "ArrowDown" || (event.key == "Tab" && !event.shiftKey)) {
       this.selected = this.nthItem(1);
-      this.shadowRoot.querySelector(".list-body").focus();
+      //this.shadowRoot.querySelector(".list-body").focus();
       event.preventDefault();
     } else if (event.key == "ArrowUp" || (event.key == "Tab" && event.shiftKey)) {
       this.selected = this.nthItem(-1);
-      this.shadowRoot.querySelector(".list-body").focus();
+      //this.shadowRoot.querySelector(".list-body").focus();
       event.preventDefault();
     } else if (event.key == "Enter" && !event.repeat) {
       await this.enterSelect(cmdOrCtrlKey(event));
@@ -517,8 +526,10 @@ export default class BaseItemList extends HTMLElement {
 
       if (this.partialMatchFullPath) {
         for (let item of this.allItems) {
-          let pathString = item.fullSearchString.toLowerCase();
-
+          let pathString = (this.searchAccountName ? (item.account.name.toLowerCase() + '/') : '') + item.fullSearchString.toLowerCase();
+// console.log(">>>>>>>> item.account.name: ", item.account.name);
+// console.log(">>>>>>>> item.fullSearchString: ", item.fullSearchString);
+// console.log(">>>>>>> pathString: ", pathString);
           if (!hasAccent) {
             pathString = pathString.normalize("NFD").replace(DIACRITICS, "");
           }
