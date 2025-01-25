@@ -247,7 +247,7 @@ export default class BaseItemList extends HTMLElement {
       if(!this.selected) {
         this.selected = this.nthItem(1);
       }
-      observer.disconnect();
+      //observer.disconnect();
     });
     
     observer.observe(listBody, {
