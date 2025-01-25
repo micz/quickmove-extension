@@ -145,7 +145,8 @@ export default class BaseItemList extends HTMLElement {
 
       .header-item {
         background-color: color-mix(in srgb, currentcolor 6%, transparent);
-        border: 1px solid color-mix(in srgb, currentcolor 30%, transparent);
+        font-weight: bold;
+        text-decoration: underline;
       }
 
       .item .icon, .header-item .icon {
