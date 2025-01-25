@@ -83,7 +83,7 @@ html[compact] .action-buttons label:last-of-type {
   background-color: light-dark(#facc15, #fef2c3);
   border-radius: 5px;
 }
-.warning.hidden {
+.warning.hidden, .hidden {
   display: none;
 }
 
