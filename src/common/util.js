@@ -27,3 +27,18 @@ export function cmdOrCtrlKey(event) {
   const isMac = navigator.platform.toUpperCase().includes("MAC");
   return isMac ? event.metaKey : event.ctrlKey;
 }
+
+export async function showNotification(title, message, dismissTime = 20000) {
+  let notificationID = await browser.notifications.create(null,{
+      "type": "basic",
+      "title": title,
+      "iconUrl": browser.runtime.getURL("images/icon.png"),
+      "message": message
+  });
+
+  if(dismissTime > 0) {
+    setTimeout(() => {
+      browser.notifications.clear(notificationID);
+    }, dismissTime);
+  }
+}

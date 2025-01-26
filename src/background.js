@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * Portions Copyright (C) Philipp Kewisch */
 
+import { showNotification } from "../common/util.js";
+
 const DEFAULT_ACTION_URL = "/popup/popup.html?action=move&allowed=move,copy,goto,tag";
 
 // Manifest v3: this needs to go into state memory or be queried for
@@ -53,6 +55,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
 
   let folderId = folder.id;
   let messagePages;
+  let totnum = 0;
   if (tab.type == "messageDisplay") {
     messagePages = [browser.messageDisplay.getDisplayedMessages(tab.id)];
   } else if (tab.type == "mail") {
@@ -64,6 +67,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
 
   for await (let messages of messagePages) {
     let ids = messages.map(message => message.id);
+    totnum += messages.length;
     let op = Promise.resolve();
     if (markAsRead) {
       op = op.then(() => Promise.all(ids.map(id => browser.messages.update(id, { read: true }))));
@@ -78,6 +82,10 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
 
   if (goToFolder) {
     await browser.mailTabs.update(tab.id, { displayedFolder: folderId }).catch(() => {});
+  }
+
+  if(operation != 'goto'){
+    showNotification("Quickmove", `[${operation}] Processed ${totnum} message${totnum>1?'s':''}. Folder ${folderId}`, 10000);
   }
 }
 async function applyTags(tag) {
