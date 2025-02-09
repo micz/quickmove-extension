@@ -29,7 +29,8 @@ this.quickmove = class extends ExtensionAPI {
     return {
       quickmove: {
         // bug 1840039 - messenger.folders.query API
-        // Keeping this around as this verison allows us to switch between MRMTime and MRUTime
+        // bug 1945514 - allow differing between MRU/MRMTime
+        // TB136 COMPAT
         async query({ recent, limit, canFileMessages }) {
           function* allFolders(root) {
             if (
@@ -90,6 +91,7 @@ this.quickmove = class extends ExtensionAPI {
         },
 
         // bug 1849476 - messages.move/copy() doesn't set mail.last_msg_movecopy_target_uri
+        // TB136 COMPAT
         async setLastMoveCopyFolder({ accountId, path }, isMove) {
           /* eslint-disable */
           /* This is verbatim from ext-mail.js */
