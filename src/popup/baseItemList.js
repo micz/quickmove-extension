@@ -18,7 +18,7 @@ export default class BaseItemList extends HTMLElement {
 
   ignoreFocus = false;
   partialMatchFullPath = false;
-  searchAccountName = false
+  searchAccountName = false;
 
   static observedAttributes = ["placeholder"];
 
@@ -518,7 +518,7 @@ export default class BaseItemList extends HTMLElement {
 
       if (this.partialMatchFullPath) {
         for (let item of this.allItems) {
-          let pathString = (this.searchAccountName ? (item.account.name.toLowerCase() + '/') : '') + item.fullSearchString.toLowerCase();
+          let pathString = (this.searchAccountName ? (item.account.name.toLowerCase() + "/") : "") + item.fullSearchString.toLowerCase();
 
           if (!hasAccent) {
             pathString = pathString.normalize("NFD").replace(DIACRITICS, "");
