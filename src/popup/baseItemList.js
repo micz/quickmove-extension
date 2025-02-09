@@ -18,6 +18,7 @@ export default class BaseItemList extends HTMLElement {
 
   ignoreFocus = false;
   partialMatchFullPath = false;
+  searchAccountName = true; //TODO set default false
 
   static observedAttributes = ["placeholder"];
 
@@ -517,7 +518,10 @@ export default class BaseItemList extends HTMLElement {
 
       if (this.partialMatchFullPath) {
         for (let item of this.allItems) {
-          let pathString = item.fullSearchString.toLowerCase();
+          let pathString = (this.searchAccountName ? (item.account.name.toLowerCase() + '/') : '') + item.fullSearchString.toLowerCase();
+// console.log(">>>>>>>> item.account.name: ", item.account.name);
+// console.log(">>>>>>>> item.fullSearchString: ", item.fullSearchString);
+// console.log(">>>>>>> pathString: ", pathString);
 
           if (!hasAccent) {
             pathString = pathString.normalize("NFD").replace(DIACRITICS, "");
