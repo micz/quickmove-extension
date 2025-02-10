@@ -133,5 +133,8 @@
     },
     "notificationActive": {
         "message": "Show a notification for each operation"
+    },
+    "notification_first_run": {
+        "message": "First operation done! You can activate notifications in the options."
     }
 }

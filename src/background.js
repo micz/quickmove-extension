@@ -4,6 +4,7 @@
  * Portions Copyright (C) Philipp Kewisch */
 
 import { showNotification, createNotificationText } from "../common/util.js";
+import { DEFAULT_PREFERENCES } from "./common/util.js";
 
 const DEFAULT_ACTION_URL = "/popup/popup.html?action=move&allowed=move,copy,goto,tag";
 
@@ -44,7 +45,7 @@ async function spinWith(func, ...args) {
 }
 
 async function processSelectedMessages(folder, operation="move", goToFolder=false) {
-  let { markAsRead } = await browser.storage.local.get({ markAsRead: true });
+  let { markAsRead, notificationActive, notificationFirstRunDone } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive, notificationFirstRunDone: DEFAULT_PREFERENCES.notificationFirstRunDone });
 
   let ops = [];
 
@@ -96,14 +97,13 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
     await browser.mailTabs.update(tab.id, { displayedFolder: folderId }).catch(() => {});
   }
 
-  if(operation != "goto"){
-    let notificationMessage = createNotificationText(operation, numMessages, folderId);
+  if(operation != "goto" && (!notificationFirstRunDone || notificationActive)) {
+    let notificationMessage = createNotificationText(operation, numMessages, folderId, notificationFirstRunDone);
     showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
   }
 }
 async function applyTags(tag) {
-  let { markAsRead } = await browser.storage.local.get({ markAsRead: true });
-//console.log(">>>>>>>>>>>> tag: " + JSON.stringify(tag));
+  let { markAsRead, notificationActive, notificationFirstRunDone } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive, notificationFirstRunDone: DEFAULT_PREFERENCES.notificationFirstRunDone });
   let ops = [];
   let numMessages = 0;
 
@@ -125,9 +125,10 @@ async function applyTags(tag) {
       if (markAsRead) {
         data.read = true;
       }
-    
-      let notificationMessage = createNotificationText("tag", numMessages, tag);
-      showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
+      if(!notificationFirstRunDone || notificationActive){
+        let notificationMessage = createNotificationText("tag", numMessages, tag, notificationFirstRunDone);
+        showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
+      }
 
       return browser.messages.update(id, data);
     })));

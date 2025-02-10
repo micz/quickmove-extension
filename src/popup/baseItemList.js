@@ -367,6 +367,7 @@ export default class BaseItemList extends HTMLElement {
     } else if (!this.getAttribute("readonly")) {
       this.dispatchSelect(event.target.closest(".item"), cmdOrCtrlKey(event));
     }
+    let listItem2 = event.target.closest(".item");
   }
 
   dispatchSelect(item, altMode) {

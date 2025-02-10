@@ -9,7 +9,7 @@ export const DEFAULT_PREFERENCES = {
   migratedShiftArrow: false,
   recentStrategy: "accessed",
   partialMatchFullPath: false,
-  notificationFirstRun: false,
+  notificationFirstRunDone: false,
   notificationActive: false,
 };
 
@@ -44,8 +44,12 @@ export async function showNotification(title, message, dismissTime = 10000) {
   }
 }
 
-export function createNotificationText(operation, numMessages, destination) {
+export function createNotificationText(operation, numMessages, destination, firstRunDone = true) {
   let notificationMessage = browser.i18n.getMessage("operation_action_" + operation) + " " + numMessages + " " + browser.i18n.getMessage("operation_message_" + (numMessages>1?"plural":"single"))+".";
+  if(firstRunDone == false){
+    notificationMessage = browser.i18n.getMessage("notification_first_run") + " " + notificationMessage;
+    browser.storage.local.set({ "notificationFirstRunDone": true });
+  }
   switch(operation){
     case "copy":
     case "move":
