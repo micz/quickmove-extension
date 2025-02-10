@@ -97,7 +97,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
     await browser.mailTabs.update(tab.id, { displayedFolder: folderId }).catch(() => {});
   }
 
-  if(operation != "goto" && (!notificationFirstRunDone || notificationActive)) {
+  if (operation != "goto" && (!notificationFirstRunDone || notificationActive)) {
     let notificationMessage = createNotificationText(operation, numMessages, folderId, notificationFirstRunDone);
     showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
   }
@@ -125,7 +125,7 @@ async function applyTags(tag) {
       if (markAsRead) {
         data.read = true;
       }
-      if(!notificationFirstRunDone || notificationActive){
+      if (!notificationFirstRunDone || notificationActive) {
         let notificationMessage = createNotificationText("tag", numMessages, tag, notificationFirstRunDone);
         showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
       }
