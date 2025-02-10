@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * Portions Copyright (C) Philipp Kewisch */
 
+import { showNotification, createNotificationText } from "../common/util.js";
+
 const DEFAULT_ACTION_URL = "/popup/popup.html?action=move&allowed=move,copy,goto,tag";
 
 // Manifest v3: this needs to go into state memory or be queried for
@@ -53,6 +55,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
 
   let folderId = folder.id;
   let messagePages;
+  let numMessages = 0;
   if (tab.type == "messageDisplay") {
     messagePages = [browser.messageDisplay.getDisplayedMessages(tab.id)];
   } else if (tab.type == "mail") {
@@ -67,6 +70,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
 
   for await (let messages of messagePages) {
     let ids = messages.map(message => message.id);
+    numMessages += messages.length;
     let op = Promise.resolve();
     if (markAsRead) {
       op = op.then(() => Promise.all(ids.map(id => browser.messages.update(id, { read: true }))));
@@ -91,14 +95,21 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
   if (goToFolder) {
     await browser.mailTabs.update(tab.id, { displayedFolder: folderId }).catch(() => {});
   }
+
+  if(operation != "goto"){
+    let notificationMessage = createNotificationText(operation, numMessages, folderId);
+    showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
+  }
 }
 async function applyTags(tag) {
   let { markAsRead } = await browser.storage.local.get({ markAsRead: true });
-
+console.log(">>>>>>>>>>>> tag: " + JSON.stringify(tag));
   let ops = [];
+  let numMessages = 0;
 
   for await (let messages of selectedMessagePages()) {
     let ids = messages.map(message => message.id);
+    numMessages += messages.length;
     ops.push(Promise.all(ids.map(async (id) => {
       let msg = await browser.messages.get(id);
       let tagset = new Set(msg.tags);
@@ -114,6 +125,10 @@ async function applyTags(tag) {
       if (markAsRead) {
         data.read = true;
       }
+    
+      let notificationMessage = createNotificationText("tag", numMessages, tag);
+      showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
+
       return browser.messages.update(id, data);
     })));
   }

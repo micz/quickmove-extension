@@ -32,7 +32,7 @@ export async function showNotification(title, message, dismissTime = 10000) {
   let notificationID = await browser.notifications.create(null,{
       "type": "basic",
       "title": title,
-      "iconUrl": browser.runtime.getURL("images/icon.png"),
+      "iconUrl": browser.runtime.getURL("images/addon-atn.png"),
       "message": message
   });
   if(dismissTime > 0) {
@@ -40,4 +40,18 @@ export async function showNotification(title, message, dismissTime = 10000) {
       browser.notifications.clear(notificationID);
     }, dismissTime);
   }
+}
+
+export function createNotificationText(operation, numMessages, destination) {
+  let notificationMessage = browser.i18n.getMessage("operation_action_" + operation) + " " + numMessages + " " + browser.i18n.getMessage("operation_message_" + (numMessages>1?"plural":"single"))+".";
+  switch(operation){
+    case "copy":
+    case "move":
+      notificationMessage += " Folder: " + destination;
+      break;
+    case "tag":
+      notificationMessage += " Tag: " + destination;
+      break;
+  }
+  return notificationMessage;
 }
