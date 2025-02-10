@@ -9,6 +9,8 @@ export const DEFAULT_PREFERENCES = {
   migratedShiftArrow: false,
   recentStrategy: "accessed",
   partialMatchFullPath: false,
+  notificationFirstRun: false,
+  notificationActive: false,
 };
 
 export async function getValidatedFolders(rootNode, prefName) {

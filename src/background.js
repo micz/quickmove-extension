@@ -103,7 +103,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
 }
 async function applyTags(tag) {
   let { markAsRead } = await browser.storage.local.get({ markAsRead: true });
-console.log(">>>>>>>>>>>> tag: " + JSON.stringify(tag));
+//console.log(">>>>>>>>>>>> tag: " + JSON.stringify(tag));
   let ops = [];
   let numMessages = 0;
 

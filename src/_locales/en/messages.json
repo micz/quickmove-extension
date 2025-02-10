@@ -130,5 +130,8 @@
     },
     "operation_message_plural": {
         "message": "messages"
+    },
+    "notificationActive": {
+        "message": "Show a notification for each operation"
     }
 }
