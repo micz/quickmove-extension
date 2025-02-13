@@ -53,10 +53,10 @@ export function createNotificationText(operation, numMessages, destination, firs
   switch (operation) {
     case "copy":
     case "move":
-      notificationMessage += " Folder: " + destination;
+      notificationMessage += browser.i18n.getMessage("Folder") + " : " + destination;
       break;
     case "tag":
-      notificationMessage += " Tag: " + destination;
+      notificationMessage += browser.i18n.getMessage("actionTag") + " : " + destination;
       break;
   }
   return notificationMessage;

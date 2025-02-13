@@ -136,5 +136,8 @@
     },
     "notification_first_run": {
         "message": "First operation done! You can activate notifications in the options."
+    },
+    "Folder": {
+        "message": "Folder"
     }
 }
