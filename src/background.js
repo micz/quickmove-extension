@@ -45,7 +45,7 @@ async function spinWith(func, ...args) {
 }
 
 async function processSelectedMessages(folder, operation="move", goToFolder=false) {
-  let { markAsRead, notificationActive } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive });
+  let { markAsRead, notificationActive, op_counters } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive, op_counters: DEFAULT_PREFERENCES.op_counters });
 
   let ops = [];
 
@@ -72,6 +72,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
   for await (let messages of messagePages) {
     let ids = messages.map(message => message.id);
     numMessages += messages.length;
+    op_counters[operation] += messages.length;
     let op = Promise.resolve();
     if (markAsRead) {
       op = op.then(() => Promise.all(ids.map(id => browser.messages.update(id, { read: true }))));
@@ -86,6 +87,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
     ops.push(op);
   }
 
+  await browser.storage.local.set({ op_counters }); console.log(">>>>>>>>>> ", JSON.stringify(op_counters));
   await Promise.all(ops);
 
   if (majorVersion < 137) {
@@ -102,13 +104,14 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
   }
 }
 async function applyTags(tag) {
-  let { markAsRead, notificationActive } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive });
+  let { markAsRead, notificationActive, op_counters } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive, op_counters: DEFAULT_PREFERENCES.op_counters });
   let ops = [];
   let numMessages = 0;
 
   for await (let messages of selectedMessagePages()) {
     let ids = messages.map(message => message.id);
     numMessages += messages.length;
+    op_counters.tag += messages.length;
     ops.push(Promise.all(ids.map(async (id) => {
       let msg = await browser.messages.get(id);
       let tagset = new Set(msg.tags);
@@ -132,6 +135,7 @@ async function applyTags(tag) {
     })));
   }
 
+  await browser.storage.local.set({ op_counters });
   await Promise.all(ops);
 }
 
