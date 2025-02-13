@@ -3,6 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * Portions Copyright (C) Philipp Kewisch */
 
+import { createNotificationText } from "../common/util.js";
+import { DEFAULT_PREFERENCES } from "./common/util.js";
+
 const DEFAULT_ACTION_URL = "/popup/popup.html?action=move&allowed=move,copy,goto,tag";
 
 // Manifest v3: this needs to go into state memory or be queried for
@@ -42,7 +45,7 @@ async function spinWith(func, ...args) {
 }
 
 async function processSelectedMessages(folder, operation="move", goToFolder=false) {
-  let { markAsRead } = await browser.storage.local.get({ markAsRead: true });
+  let { markAsRead, notificationActive, op_counters } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive, op_counters: DEFAULT_PREFERENCES.op_counters });
 
   let ops = [];
 
@@ -53,6 +56,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
 
   let folderId = folder.id;
   let messagePages;
+  let numMessages = 0;
   if (tab.type == "messageDisplay") {
     messagePages = [browser.messageDisplay.getDisplayedMessages(tab.id)];
   } else if (tab.type == "mail") {
@@ -67,6 +71,8 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
 
   for await (let messages of messagePages) {
     let ids = messages.map(message => message.id);
+    numMessages += messages.length;
+    op_counters[operation] += messages.length;
     let op = Promise.resolve();
     if (markAsRead) {
       op = op.then(() => Promise.all(ids.map(id => browser.messages.update(id, { read: true }))));
@@ -81,6 +87,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
     ops.push(op);
   }
 
+  await browser.storage.local.set({ op_counters }); console.log(">>>>>>>>>> ", JSON.stringify(op_counters));
   await Promise.all(ops);
 
   if (majorVersion < 137) {
@@ -91,14 +98,20 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
   if (goToFolder) {
     await browser.mailTabs.update(tab.id, { displayedFolder: folderId }).catch(() => {});
   }
+
+  if (operation != "goto" && notificationActive) {
+    createNotificationText(operation, numMessages, folderId);
+  }
 }
 async function applyTags(tag) {
-  let { markAsRead } = await browser.storage.local.get({ markAsRead: true });
-
+  let { markAsRead, notificationActive, op_counters } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive, op_counters: DEFAULT_PREFERENCES.op_counters });
   let ops = [];
+  let numMessages = 0;
 
   for await (let messages of selectedMessagePages()) {
     let ids = messages.map(message => message.id);
+    numMessages += messages.length;
+    op_counters.tag += messages.length;
     ops.push(Promise.all(ids.map(async (id) => {
       let msg = await browser.messages.get(id);
       let tagset = new Set(msg.tags);
@@ -114,10 +127,15 @@ async function applyTags(tag) {
       if (markAsRead) {
         data.read = true;
       }
+      if (notificationActive) {
+        createNotificationText("tag", numMessages, tag);
+      }
+
       return browser.messages.update(id, data);
     })));
   }
 
+  await browser.storage.local.set({ op_counters });
   await Promise.all(ops);
 }
 
