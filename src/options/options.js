@@ -103,6 +103,19 @@ async function setupListeners() {
   if (currentValue) {
     document.querySelector(`.panel[data-value="${currentValue}"]`).classList.add("selected");
   }
+
+  document.getElementById("notificationActive").addEventListener("change", (event) => {
+    async function _notificationActive() {
+      if (event.target.checked) {
+        const granted = await messenger.permissions.request({permissions: ["notifications"]});
+        if (!granted) {
+          event.target.checked = false;
+        }
+      }      
+    }
+
+    _notificationActive();
+  });
 }
 
 function setupLocalization() {
