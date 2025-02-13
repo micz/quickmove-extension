@@ -1,3 +1,5 @@
+import { PluralForm } from "./pluralform.js";
+
 export const DEFAULT_PREFERENCES = {
   layout: "auto",
   markAsRead: true,
@@ -44,7 +46,8 @@ export async function showNotification(title, message, dismissTime = 10000) {
 }
 
 export function createNotificationText(operation, numMessages, destination) {
-  let notificationMessage = browser.i18n.getMessage("operation_action_" + operation) + " " + numMessages + " " + browser.i18n.getMessage("operation_message_" + (numMessages>1?"plural":"single"))+".";
+  let pluralFunc = PluralForm.makeGetter(PluralForm.ruleNum)[0];
+  let notificationMessage = browser.i18n.getMessage("operation_action_" + operation) + " " + numMessages + " " + pluralFunc(numMessages, browser.i18n.getMessage("operation_message_pluralforms"));
   switch (operation) {
     case "copy":
     case "move":
