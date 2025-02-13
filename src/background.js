@@ -45,7 +45,7 @@ async function spinWith(func, ...args) {
 }
 
 async function processSelectedMessages(folder, operation="move", goToFolder=false) {
-  let { markAsRead, notificationActive, notificationFirstRunDone } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive, notificationFirstRunDone: DEFAULT_PREFERENCES.notificationFirstRunDone });
+  let { markAsRead, notificationActive } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive });
 
   let ops = [];
 
@@ -97,12 +97,12 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
     await browser.mailTabs.update(tab.id, { displayedFolder: folderId }).catch(() => {});
   }
 
-  if (operation != "goto" && (!notificationFirstRunDone || notificationActive)) {
-    createNotificationText(operation, numMessages, folderId, notificationFirstRunDone);
+  if (operation != "goto" && notificationActive) {
+    createNotificationText(operation, numMessages, folderId);
   }
 }
 async function applyTags(tag) {
-  let { markAsRead, notificationActive, notificationFirstRunDone } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive, notificationFirstRunDone: DEFAULT_PREFERENCES.notificationFirstRunDone });
+  let { markAsRead, notificationActive } = await browser.storage.local.get({ markAsRead: true, notificationActive: DEFAULT_PREFERENCES.notificationActive });
   let ops = [];
   let numMessages = 0;
 
@@ -124,8 +124,8 @@ async function applyTags(tag) {
       if (markAsRead) {
         data.read = true;
       }
-      if (!notificationFirstRunDone || notificationActive) {
-        createNotificationText("tag", numMessages, tag, notificationFirstRunDone);
+      if (notificationActive) {
+        createNotificationText("tag", numMessages, tag);
       }
 
       return browser.messages.update(id, data);
