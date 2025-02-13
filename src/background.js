@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * Portions Copyright (C) Philipp Kewisch */
 
-import { showNotification, createNotificationText } from "../common/util.js";
+import { createNotificationText } from "../common/util.js";
 import { DEFAULT_PREFERENCES } from "./common/util.js";
 
 const DEFAULT_ACTION_URL = "/popup/popup.html?action=move&allowed=move,copy,goto,tag";
