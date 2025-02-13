@@ -53,11 +53,11 @@ export function createNotificationText(operation, numMessages, destination, firs
   switch (operation) {
     case "copy":
     case "move":
-      notificationMessage += browser.i18n.getMessage("Folder") + " : " + destination;
+      notificationMessage += " " + browser.i18n.getMessage("Folder") + ": " + destination;
       break;
     case "tag":
-      notificationMessage += browser.i18n.getMessage("actionTag") + " : " + destination;
+      notificationMessage += " " + browser.i18n.getMessage("actionTag") + ": " + destination;
       break;
   }
-  return notificationMessage;
+  showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
 }

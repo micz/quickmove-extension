@@ -98,8 +98,7 @@ async function processSelectedMessages(folder, operation="move", goToFolder=fals
   }
 
   if (operation != "goto" && (!notificationFirstRunDone || notificationActive)) {
-    let notificationMessage = createNotificationText(operation, numMessages, folderId, notificationFirstRunDone);
-    showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
+    createNotificationText(operation, numMessages, folderId, notificationFirstRunDone);
   }
 }
 async function applyTags(tag) {
@@ -126,8 +125,7 @@ async function applyTags(tag) {
         data.read = true;
       }
       if (!notificationFirstRunDone || notificationActive) {
-        let notificationMessage = createNotificationText("tag", numMessages, tag, notificationFirstRunDone);
-        showNotification(browser.i18n.getMessage("extensionName"), notificationMessage, 10000);
+        createNotificationText("tag", numMessages, tag, notificationFirstRunDone);
       }
 
       return browser.messages.update(id, data);
