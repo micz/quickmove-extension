@@ -242,6 +242,17 @@ export default class BaseItemList extends HTMLElement {
     let searchInput = this.search;
     let listBody = this.shadowRoot.querySelector(".list-body");
 
+    const observer = new MutationObserver(() => {
+      if (!this.selected) {
+        this.selected = this.nthItem(1);
+      }
+    });
+
+    observer.observe(listBody, {
+      childList: true,
+      subtree: true
+    });
+
     searchInput.placeholder = this.getAttribute("placeholder") || "";
 
     searchInput.addEventListener("input", this.searchInputCallbackRaw);
@@ -295,20 +306,34 @@ export default class BaseItemList extends HTMLElement {
 
   nthItem(n) {
     let itemList = this.shadowRoot.querySelector(".list-body");
-    let listItem = itemList.firstElementChild;
-    let direction = "nextElementSibling";
+    let selectedItem = itemList.querySelector(".selected");
 
-    if (n < 0) {
-      listItem = itemList.lastElementChild;
-      direction = "previousElementSibling";
-      n = -n - 1;
-    }
+    let n_pos = Math.abs(n);
 
-    for (; n > 0; n--) {
-      while (listItem && !listItem.classList.contains("item")) {
-        listItem = listItem[direction];
+    if (!selectedItem) {
+      if (((n < 0) && (itemList.lastElementChild?.classList.contains("item"))) ||
+        ((n > 0) && (itemList.firstElementChild?.classList.contains("item")))) {
+        n_pos--;
       }
     }
+
+    let listItem = selectedItem || (n < 0 ? itemList.lastElementChild : itemList.firstElementChild);
+    let direction = n < 0 ? "previousElementSibling" : "nextElementSibling";
+
+    while (listItem && n_pos > 0) {
+      listItem = listItem[direction];
+
+      if (!listItem) {
+        listItem = (direction === "nextElementSibling")
+          ? itemList.firstElementChild
+          : itemList.lastElementChild;
+      }
+
+      if (listItem && listItem.classList.contains("item")) {
+        n_pos--;
+      }
+    }
+
     return listItem;
   }
 
@@ -404,11 +429,9 @@ export default class BaseItemList extends HTMLElement {
 
     if (event.key == "ArrowDown" || (event.key == "Tab" && !event.shiftKey)) {
       this.selected = this.nthItem(1);
-      this.shadowRoot.querySelector(".list-body").focus();
       event.preventDefault();
     } else if (event.key == "ArrowUp" || (event.key == "Tab" && event.shiftKey)) {
       this.selected = this.nthItem(-1);
-      this.shadowRoot.querySelector(".list-body").focus();
       event.preventDefault();
     } else if (event.key == "Enter" && !event.repeat) {
       await this.enterSelect(cmdOrCtrlKey(event));
