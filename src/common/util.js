@@ -12,6 +12,9 @@ export const DEFAULT_PREFERENCES = {
   recentStrategy: "accessed",
   partialMatchFullPath: false,
   notificationActive: false,
+  counters_moved: 0,
+  counters_copied: 0,
+  counters_tagged: 0,
 };
 
 export async function getValidatedFolders(rootNode, prefName) {
