@@ -12,7 +12,7 @@ export const DEFAULT_PREFERENCES = {
   recentStrategy: "accessed",
   partialMatchFullPath: false,
   notificationActive: false,
-  op_counters: {move: 0, copy: 0, tag: 0},
+  op_counters: { move: 0, copy: 0, tag: 0 },
 };
 
 export async function getValidatedFolders(rootNode, prefName) {
