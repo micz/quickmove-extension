@@ -237,12 +237,8 @@ export default class BaseItemList extends HTMLElement {
     this.itemListKeyDown = this.itemListKeyDown.bind(this);
     this.itemListSelectLeave = this.itemListSelectLeave.bind(this);
     this.searchKeyDownCallback = this.searchKeyDownCallback.bind(this);
-  }
 
-  connectedCallback() {
-    let searchInput = this.search;
     let listBody = this.shadowRoot.querySelector(".list-body");
-
     const observer = new MutationObserver(() => {
       if(!this.selected) {
         this.selected = this.nthItem(1);
@@ -254,6 +250,11 @@ export default class BaseItemList extends HTMLElement {
       childList: true,
       subtree: true
     });
+  }
+
+  connectedCallback() {
+    let searchInput = this.search;
+    let listBody = this.shadowRoot.querySelector(".list-body");
 
     searchInput.placeholder = this.getAttribute("placeholder") || "";
 
