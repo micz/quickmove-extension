@@ -14,6 +14,7 @@ export const DEFAULT_PREFERENCES = {
   searchAccountName: false,
   notificationActive: false,
   operationCounters: { move: 0, copy: 0, tag: 0 },
+  operationMenuItems: { move: true, copy: true, goto: true, tag: true },
 };
 
 export async function getValidatedFolders(rootNode, prefName) {
