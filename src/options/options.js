@@ -112,6 +112,27 @@ async function setupListeners() {
       }
     }
   });
+
+  document.querySelectorAll(".menuItemAction").forEach(item => {
+    item.addEventListener("change", (event) => {
+      if (!checkMenuItemVisibility()) {
+        event.target.checked = true;
+      }
+    }
+    );
+  });
+}
+
+function checkMenuItemVisibility() {
+  let operationMenuItemsMove = document.getElementById("operationMenuItemsMove").checked;
+  let operationMenuItemsCopy = document.getElementById("operationMenuItemsCopy").checked;
+  let operationMenuItemsGoto = document.getElementById("operationMenuItemsGoto").checked;
+  let operationMenuItemsTag = document.getElementById("operationMenuItemsTag").checked;
+  let checkedItems = [operationMenuItemsMove, operationMenuItemsCopy, operationMenuItemsGoto, operationMenuItemsTag].filter(item => item).length;
+  if (checkedItems < 1) {
+    return false;
+  }
+  return true;
 }
 
 function setupLocalization() {
