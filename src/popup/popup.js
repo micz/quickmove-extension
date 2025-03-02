@@ -61,20 +61,20 @@ async function load() {
   });
 
   if (!operationMenuItemsMove) {
-    document.querySelector(`label[for='action-move']`).style.display = "none";
-    document.querySelector(`#action-move`).style.display = "none";
+    document.querySelector("label[for='action-move']").style.display = "none";
+    document.querySelector("#action-move").style.display = "none";
   }
   if (!operationMenuItemsCopy) {
-    document.querySelector(`label[for='action-copy']`).style.display = "none";
-    document.querySelector(`#action-copy`).style.display = "none";
+    document.querySelector("label[for='action-copy']").style.display = "none";
+    document.querySelector("#action-copy").style.display = "none";
   }
   if (!operationMenuItemsGoto) {
-    document.querySelector(`label[for='action-goto']`).style.display = "none";
-    document.querySelector(`#action-goto`).style.display = "none";
+    document.querySelector("label[for='action-goto']").style.display = "none";
+    document.querySelector("#action-goto").style.display = "none";
   }
   if (!operationMenuItemsTag) {
-    document.querySelector(`label[for='action-tag']`).style.display = "none";
-    document.querySelector(`#action-tag`).style.display = "none";
+    document.querySelector("label[for='action-tag']").style.display = "none";
+    document.querySelector("#action-tag").style.display = "none";
   }
 
   let params = new URLSearchParams(window.location.search);
