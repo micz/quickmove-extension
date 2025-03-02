@@ -160,5 +160,11 @@
     },
     "operationMenuItemsTitle": {
         "message": "Operation Menu Items"
+    },
+    "menuItemActionInfo": {
+        "message": "Choose which actions should be available in the popup menu."
+    },
+    "menuItemActionWarning": {
+        "message": "At least one item must be selected."
     }
 }

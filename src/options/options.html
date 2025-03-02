@@ -56,24 +56,27 @@
         <button id="translate" data-l10n-id="translate"></button>
       </div>
     </div>
-    <fieldset>
+    <fieldset class="operationMenuItemsFieldset">
       <legend data-l10n-id="operationMenuItemsTitle"></legend>
-      <div class="overflow">
-        <div class="preference">
+      <div>
+        <div class="menuItemActionDiv" data-l10n-id="menuItemActionInfo"></div>
+        <div class="menuItemActionDiv" data-l10n-id="menuItemActionWarning"></div>
+        <div class="menuItemActionDiv">&nbsp;</div>
+        <div class="preference menuItemActionDiv">
           <input type="checkbox" id="operationMenuItemsMove" class="menuItemAction">
-          <label for="actionMove" data-l10n-id="actionMove"></label>
+          <label for="operationMenuItemsMove" data-l10n-id="actionMove"></label>
         </div>
-        <div class="preference">
+        <div class="preference menuItemActionDiv">
           <input type="checkbox" id="operationMenuItemsCopy" class="menuItemAction">
-          <label for="actionCopy" data-l10n-id="actionCopy"></label>
+          <label for="operationMenuItemsCopy" data-l10n-id="actionCopy"></label>
         </div>
-        <div class="preference">
+        <div class="preference menuItemActionDiv">
           <input type="checkbox" id="operationMenuItemsGoto" class="menuItemAction">
-          <label for="actionGoto" data-l10n-id="actionGoto"></label>
+          <label for="operationMenuItemsGoto" data-l10n-id="actionGoto"></label>
         </div>
-        <div class="preference">
+        <div class="preference menuItemActionDiv">
           <input type="checkbox" id="operationMenuItemsTag" class="menuItemAction">
-          <label for="actionTag" data-l10n-id="actionTag"></label>
+          <label for="operationMenuItemsTag" data-l10n-id="actionTag"></label>
         </div>
       </div>
     </fieldset>

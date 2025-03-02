@@ -89,6 +89,15 @@ fieldset {
   border-color: light-dark(#fff, #5f5f5f);
 }
 
+.menuItemActionDiv {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.operationMenuItemsFieldset {
+  min-height: fit-content;
+}
+
 .overflow {
   position: relative;
   height: 3em;
