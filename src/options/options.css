@@ -86,6 +86,7 @@ fieldset {
   min-height: 25em;
   grid-column: span 2;
   padding: 10px;
+  border-color: light-dark(#fff, #5f5f5f);
 }
 
 .overflow {
