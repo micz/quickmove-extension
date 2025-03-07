@@ -90,6 +90,17 @@ fieldset {
 }
 
 .menuItemActionDiv {
+  display: inline-block;
+  margin-left: 35px;
+}
+
+.menuItemActionDivGroup{
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.menuItemActionDivText{
   display: block;
   margin-bottom: 10px;
 }
